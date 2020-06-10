@@ -1,7 +1,11 @@
+import os
+
+if os.getenv("MAESTRO_CONFIG") is None:
+    os.environ["MAESTRO_CONFIG"] = "configs.simple_light"
+
 from orchestrator import Orchestrator
-import time
 
 orch = Orchestrator()
 orch.connect()
-orch.run(True)
+# orch.run()
 orch.disconnect()

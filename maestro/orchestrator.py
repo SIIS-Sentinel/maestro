@@ -1,22 +1,31 @@
 from typing import List
 import time
+import importlib
+import os
+import sys
 
 import paramiko
 
-import config as cfg
+from hub import Hub
+from node import Node
+from config_interface import ConfigInterface
+
+config_path: str = os.environ["MAESTRO_CONFIG"]
+try:
+    cfg: ConfigInterface = importlib.import_module(config_path)  # type:ignore
+except ImportError:
+    print(f"Invalid config file: {config_path}")
+    sys.exit(-1)
 
 
 class Orchestrator():
-    def __init__(self, username: str = cfg.username, keyfile: str = cfg.keyfile, hub: cfg.Hub = cfg.hub, nodes: List[cfg.Node] = cfg.nodes):
-        # self.hub_client: paramiko.SSHClient
-        # self.nodes_clients: List[paramiko.SSHClient]
-
+    def __init__(self, username: str = cfg.username, keyfile: str = cfg.keyfile, hub: Hub = cfg.hub, nodes: List[Node] = cfg.nodes):
         self.username: str = username
         self.keyfile: str = keyfile
         self.framework: str = cfg.framework
 
-        self.hub: cfg.Hub = hub
-        self.nodes: List[cfg.Node] = nodes
+        self.hub: Hub = hub
+        self.nodes: List[Node] = nodes
 
     def connect_nodes(self):
         for node in self.nodes:
@@ -67,6 +76,7 @@ class Orchestrator():
     def connect(self):
         self.connect_hub()
         self.connect_nodes()
+        print("Connected to the nodes and the hub")
 
     def disconnect(self):
         self.disconnect_hub()
