@@ -1,7 +1,7 @@
 import os
 
 if os.getenv("MAESTRO_CONFIG") is None:
-    os.environ["MAESTRO_CONFIG"] = "configs.simple_light"
+    os.environ["MAESTRO_CONFIG"] = "configs.all_devices"
 
 from orchestrator import Orchestrator
 
