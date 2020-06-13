@@ -11,6 +11,7 @@ hub: Hub = Hub()
 hub.addr = "hub.local"
 hub.sched_path = "/home/pi/scheduler/"
 hub.watch_path = "/home/pi/watchtower/"
+hub.experiment_name = "simple_light"
 
 # Nodes settings
 node_light = Node()

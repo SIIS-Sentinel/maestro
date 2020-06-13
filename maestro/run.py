@@ -7,6 +7,6 @@ from orchestrator import Orchestrator
 
 orch = Orchestrator()
 orch.connect()
-orch.run_nodes_watch()
-# orch.run()
+# orch.run_nodes_watch()
+orch.run()
 orch.disconnect()

@@ -59,15 +59,6 @@ node_presence.watch_path = "/home/pi/src/watchtower/"
 node_presence.device_file = "presence.py"
 node_presence.sudo_needed = False
 
-# Sensor(weather station)
-node_sensor = Node()
-node_sensor.name = "sensor"
-node_sensor.addr = "sensor.local"
-node_sensor.integ_path = "/home/pi/src/integrations/"
-node_sensor.watch_path = "/home/pi/src/watchtower/"
-node_sensor.device_file = "sensor.py"
-node_sensor.sudo_needed = False
-
 # Smoke
 node_smoke = Node()
 node_smoke.name = "smoke"
@@ -101,7 +92,6 @@ nodes: list = [
     node_lock,
     node_outlet,
     node_presence,
-    node_sensor,
     node_smoke,
     node_switch,
     node_tv

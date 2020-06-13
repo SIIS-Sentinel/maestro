@@ -9,3 +9,4 @@ class Hub():
         self.watch_path: str
         self.sched_client: SSHClient
         self.watch_client: SSHClient
+        self.experiment_name: str

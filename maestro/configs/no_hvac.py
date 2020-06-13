@@ -11,6 +11,7 @@ hub: Hub = Hub()
 hub.addr = "hub.local"
 hub.sched_path = "/home/pi/scheduler/"
 hub.watch_path = "/home/pi/watchtower/"
+hub.experiment_name = "no_hvac"
 
 # Nodes settings
 # Light

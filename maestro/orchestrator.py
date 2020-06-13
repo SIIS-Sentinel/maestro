@@ -92,7 +92,8 @@ class Orchestrator():
         print("Starting Scheduler for the hub")
         command: str = f"cd {self.hub.sched_path} && \
             source venv/bin/activate && \
-            python main_test.py "
+            cd experiments/{self.hub.experiment_name} && \
+            python {self.hub.experiment_name}.py"
         print(command)
         _, stdout, _ = self.hub.sched_client.exec_command(command, get_pty=True)
         if blocking:
