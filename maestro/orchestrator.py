@@ -137,9 +137,11 @@ class Orchestrator():
     def run_nodes_watch(self, debug: bool = False):
         for node in self.nodes:
             print(f"Starting Watchtower for {node.name}")
-            command: str = f"cd {node.watch_path} && \
+            command: str = f'sudo bash -c \
+                "pgrep python > /sys/kernel/sentinel/tracked_pid" && \
+                cd {node.watch_path} && \
                 source venv/bin/activate && \
-                python main_node.py"
+                python main_node.py'
             print(command)
             node.watch_client.exec_command(command, get_pty=True)
 
