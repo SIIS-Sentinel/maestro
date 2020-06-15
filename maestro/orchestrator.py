@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, IO
 import time
 import importlib
 import os
@@ -16,6 +16,17 @@ try:
 except ImportError:
     print(f"Invalid config file: {config_path}")
     sys.exit(-1)
+
+
+class bcolors:
+    BROWN = '\033[95m'
+    BLUE = '\033[94m'
+    GREEN = '\033[92m'
+    ORANGE = '\033[93m'
+    RED = '\033[91m'
+    ENDC = '\033[0m'
+    BOLD = '\033[1m'
+    UNDERLINE = '\033[4m'
 
 
 class Orchestrator():
@@ -94,34 +105,39 @@ class Orchestrator():
             source venv/bin/activate && \
             cd experiments/{self.hub.experiment_name} && \
             python {self.hub.experiment_name}.py"
-        print(command)
+        print(" ".join(command.split()))
+        stdout: paramiko.channel.ChannelFile
         _, stdout, _ = self.hub.sched_client.exec_command(command, get_pty=True)
-        if blocking:
-            line: str
-            for line in stdout:
-                print(line.strip("\n"))
+        self.hub.sched_stdout = stdout
+        # if blocking:
+        #     line: str
+        #     for line in stdout:
+        #         print(line.strip("\n"))
 
     def reset_db(self):
-        print("Resetting the Watchtower database")
+        self.print_color(bcolors.BOLD, "Resetting the Watchtower database")
         command: str = f'cd {self.hub.watch_path} && \
             ./reset_db.sh'
+        stdout: paramiko.channel.ChannelFile
         _, stdout, _ = self.hub.watch_client.exec_command(command, get_pty=True)
         stdout.channel.recv_exit_status()
 
     def run_hub_watchtower(self):
         self.reset_db()
-        print("Starting Watchtower for the hub")
+        self.print_color(bcolors.BOLD, "Starting Watchtower for the hub")
         command: str = f"cd {self.hub.watch_path} && \
             source venv/bin/activate && \
             python main_hub.py "
-        print(command)
-        self.hub.watch_client.exec_command(command, get_pty=True)
+        print(" ".join(command.split()))
+        stdout: paramiko.channel.ChannelFile
+        _, stdout, _ = self.hub.watch_client.exec_command(command, get_pty=True)
+        self.hub.watch_stdout = stdout
         time.sleep(2)
 
     def run_nodes_integration(self, debug: bool = False):
-        print("Staring integrations...")
+        self.print_color(bcolors.BOLD, "Staring integrations...")
         for node in self.nodes:
-            print(f"Starting Integrations for {node.name}")
+            self.print_color(bcolors.BOLD, f"Starting Integrations for {node.name}")
             command: str
             if node.sudo_needed:
                 command = f'cd {node.integ_path} && \
@@ -133,23 +149,36 @@ class Orchestrator():
                 command = f"cd {node.integ_path} && \
                     source venv/bin/activate && \
                     python {self.framework}/{node.device_file} "
-            print(command)
+            print(" ".join(command.split()))
+            stdout: paramiko.channel.ChannelFile
             _, stdout, _ = node.integ_client.exec_command(command, get_pty=True)
 
     def run_nodes_watch(self, debug: bool = False):
         for node in self.nodes:
-            print(f"Starting Watchtower for {node.name}")
+            self.print_color(bcolors.BOLD, f"Starting Watchtower for {node.name}")
             command: str = f'sudo bash -c \
                 "pgrep python > /sys/kernel/sentinel/tracked_pid" && \
                 cd {node.watch_path} && \
                 source venv/bin/activate && \
                 python main_node.py'
-            print(command)
+            print(" ".join(command.split()))
             node.watch_client.exec_command(command, get_pty=True)
 
     def run_hub(self, blocking: bool = True):
         self.run_hub_watchtower()
         self.run_hub_sched(blocking)
+        if blocking is True:
+            while not self.hub.sched_stdout.channel.exit_status_ready():
+                if self.hub.sched_stdout.channel.recv_ready():
+                    line = self.hub.sched_stdout.readline()
+                    self.print_color(bcolors.GREEN, line.strip("\n"))
+                if self.hub.watch_stdout.channel.recv_ready():
+                    line = self.hub.watch_stdout.readline()
+                    self.print_color(bcolors.BLUE, line.strip("\n"))
+
+    @ staticmethod
+    def print_color(color: str, line: str):
+        print(color + line + bcolors.ENDC)
 
     def run_nodes(self):
         self.run_nodes_integration()
@@ -169,3 +198,8 @@ class Orchestrator():
         print("OK")
         print("All connections successful, closing all")
         self.disconnect()
+
+    def debug(self):
+        self.connect_hub()
+        print(self.run_hub(False))
+        print(type(self.hub.watch_stdout))
