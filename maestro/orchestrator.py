@@ -119,6 +119,7 @@ class Orchestrator():
         time.sleep(2)
 
     def run_nodes_integration(self, debug: bool = False):
+        print("Staring integrations...")
         for node in self.nodes:
             print(f"Starting Integrations for {node.name}")
             command: str
