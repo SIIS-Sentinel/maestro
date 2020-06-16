@@ -3,7 +3,7 @@ from node import Node
 
 # General settings
 username: str = "pi"
-keyfile: str = "/Users/adrien/.ssh/iot_rsa"
+keyfile: str = "/home/pi/.ssh/iot_rsa"
 framework: str = "hass"
 
 # Hub settings
