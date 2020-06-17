@@ -109,10 +109,6 @@ class Orchestrator():
         stdout: paramiko.channel.ChannelFile
         _, stdout, _ = self.hub.sched_client.exec_command(command, get_pty=True)
         self.hub.sched_stdout = stdout
-        # if blocking:
-        #     line: str
-        #     for line in stdout:
-        #         print(line.strip("\n"))
 
     def reset_db(self):
         self.print_color(bcolors.BOLD, "Resetting the Watchtower database")
@@ -127,7 +123,7 @@ class Orchestrator():
         self.print_color(bcolors.BOLD, "Starting Watchtower for the hub")
         command: str = f"cd {self.hub.watch_path} && \
             source venv/bin/activate && \
-            python main_hub.py "
+            python watchtower_hub.py "
         print(" ".join(command.split()))
         stdout: paramiko.channel.ChannelFile
         _, stdout, _ = self.hub.watch_client.exec_command(command, get_pty=True)
@@ -175,6 +171,10 @@ class Orchestrator():
                 if self.hub.watch_stdout.channel.recv_ready():
                     line = self.hub.watch_stdout.readline()
                     self.print_color(bcolors.BLUE, line.strip("\n"))
+            # Print the last Scheduler lines
+            for line in self.hub.sched_stdout:
+                self.print_color(bcolors.GREEN, line.strip("\n"))
+            return
 
     @ staticmethod
     def print_color(color: str, line: str):
@@ -182,6 +182,8 @@ class Orchestrator():
 
     def run_nodes(self):
         self.run_nodes_integration()
+        # Sleep needed to prevent obscure crashing
+        time.sleep(5)
         self.run_nodes_watch()
 
     def run(self, blocking: bool = True):
