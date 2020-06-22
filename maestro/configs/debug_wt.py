@@ -4,7 +4,7 @@ from node import Node
 # General settings
 username: str = "pi"
 keyfile: str = "/home/pi/.ssh/iot_rsa"
-framework: str = "hass"
+framework: str = "wt"
 
 # Hub settings
 hub: Hub = Hub()
@@ -86,6 +86,17 @@ node_tv.watch_path = "/home/pi/src/watchtower/"
 node_tv.device_file = "tv.py"
 node_tv.sudo_needed = False
 
+# Nodes settings
+# Sensor(weather station)
+node_sensor = Node()
+node_sensor.name = "sensor"
+node_sensor.addr = "sensor.local"
+node_sensor.integ_path = "/home/pi/src/integrations/"
+node_sensor.watch_path = "/home/pi/src/watchtower/"
+node_sensor.device_file = "sensor.py"
+node_sensor.sudo_needed = False
+
+
 nodes: list = [
     node_hvac,
     node_light,
@@ -94,5 +105,6 @@ nodes: list = [
     node_presence,
     node_smoke,
     node_switch,
-    node_tv
+    node_tv,
+    node_sensor
 ]

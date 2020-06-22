@@ -176,6 +176,20 @@ class Orchestrator():
                 self.print_color(bcolors.GREEN, line.strip("\n"))
             return
 
+    def run_node_command(self, cmd: str) -> None:
+        for node in self.nodes:
+            client = self.make_client()
+            client.connect(
+                hostname=node.addr,
+                port=node.port,
+                username=self.username,
+                key_filename=self.keyfile
+            )
+            self.print_color(bcolors.BOLD, f"{node.name}: {cmd}")
+            _, stdout, _ = client.exec_command(cmd)
+            for line in stdout:
+                print(line.strip("\n"))
+
     @ staticmethod
     def print_color(color: str, line: str):
         print(color + line + bcolors.ENDC)
