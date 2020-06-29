@@ -7,4 +7,4 @@ if os.getenv("MAESTRO_CONFIG") is None:
 from orchestrator import Orchestrator
 
 orch = Orchestrator()
-orch.run_node_command("cd src/sentinel && git diff")
+orch.run_node_command('sudo bash -c "reboot now"')
