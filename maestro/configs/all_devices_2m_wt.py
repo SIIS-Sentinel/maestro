@@ -1,6 +1,12 @@
 from hub import Hub
 from node import Node
 
+# Experimental parameters:
+# All 9 node devices
+# 2 minutes per state
+# WebTgings framework
+
+
 # General settings
 username: str = "pi"
 keyfile: str = "/home/pi/.ssh/iot_rsa"
