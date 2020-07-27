@@ -12,6 +12,8 @@ Maestro is a tool that uses [paramiko](http://www.paramiko.org/) to control all 
 
 To run `maestro`, you need to give it a configuration file that contains the list of all the devices it should connect to, as well as where to find the needed application folders on eadch of them. Premade config files are stored in the `maestro/configs` folder. 
 
+**Important:** the config file name should correspond to a folder in the `experiments/` folder of the Scheduler install of the hub. This is unwieldy as it was patched together quite quickly. Ideally, this would be replaced by an option in the `maestro` config file that specifies which experimental folder should be used.
+
 * Make sure the hub and each node are accessible over SSH from this machine, using a single SSH key.
 
 * `cd` into the `maestro` folder.
