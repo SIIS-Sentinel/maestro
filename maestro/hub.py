@@ -5,6 +5,10 @@ from paramiko.channel import ChannelFile
 
 
 class Hub():
+    """
+    This class holds all the data related to the hub, for use by the config file
+    """
+
     def __init__(self):
         self.addr: str = "hub.local"
         self.port: int = 22

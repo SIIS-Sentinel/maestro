@@ -2,7 +2,7 @@ import os
 import time
 
 if os.getenv("MAESTRO_CONFIG") is None:
-    os.environ["MAESTRO_CONFIG"] = "configs.all_devices_hass"
+    raise EnvironmentError("MAESTRO_CONFIG is not set")
 
 from orchestrator import Orchestrator
 

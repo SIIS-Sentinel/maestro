@@ -2,6 +2,10 @@ from paramiko import SSHClient
 
 
 class Node():
+    """
+    This class holds all the data related to a node, for use by the config file
+    """
+
     def __init__(self):
         self.name: str
         self.addr: str
